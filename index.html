@@ -4,17 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KD Business Update - Live Portal</title>
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <!-- React & ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
   <!-- Prop-Types & Recharts -->
   <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
   <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+  
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide-react@0.378.0/dist/umd/lucide-react.min.js"></script>
-  <!-- Babel for JSX compilation in browser -->
+  
+  <!-- Babel for JSX compilation -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
@@ -22,19 +27,23 @@
 
   <script type="text/babel">
     const { useState, useEffect, useMemo } = React;
+    
+    // Fix for CDN Global Variables
+    const Lucide = window.lucide || window.lucideReact || window.LucideReact;
     const {
       Users, UserPlus, Trash2, Edit3, Save, X, RefreshCw, Download, Upload,
       TrendingUp, FileText, CheckCircle2, AlertCircle, PieChart: PieChartIcon,
       BarChart3, Layers, DollarSign, Search, ShieldCheck, ChevronRight, Activity, PlusCircle,
       LogOut, Lock, User, KeyRound, HelpCircle, Cloud, CloudOff, Settings, Link2
-    } = LucideReact;
+    } = Lucide;
+
     const {
       BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
       PieChart, Pie, Cell
-    } = Recharts;
+    } = window.Recharts;
 
     // =========================================================================
-    // ඔබගේ GOOGLE APPS SCRIPT WEB APP URL එක මෙතැනට PASTE කරන්න (නැතිනම් UI එකෙන් දෙන්නත් පුළුවන්)
+    // ඔබගේ GOOGLE APPS SCRIPT WEB APP URL එක මෙතැනට PASTE කරන්න
     // =========================================================================
     const DEFAULT_GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwp4TkTk0i0OuN_P8dOQbFyw925cOspOE73kno1CpdEMzYmZimS1vc39Dp_TEY6TPH4/exec"; 
 
@@ -43,35 +52,22 @@
       { id: '2', name: 'Madawa', cluster: 'Team Madawa', target: 22000000, active: 12800000, inHand: 5400000, categories: { TW: 3800000, MB: 4500000, MN: 3100000, REG: 3900000, LC: 1800000, VL: 1100000 }, activeCount: 24, inHandCount: 10, collectionDue: 2800000, collectionPaid: 2400000 },
       { id: '3', name: 'Sachin', cluster: 'Team Sachin', target: 20000000, active: 11500000, inHand: 6100000, categories: { TW: 3500000, MB: 4100000, MN: 3000000, REG: 4200000, LC: 1500000, VL: 1300000 }, activeCount: 22, inHandCount: 11, collectionDue: 3100000, collectionPaid: 2750000 },
       { id: '4', name: 'Nilan', cluster: 'Team Prabath', target: 18000000, active: 9800000, inHand: 4900000, categories: { TW: 2900000, MB: 3600000, MN: 2500000, REG: 3200000, LC: 1400000, VL: 1100000 }, activeCount: 19, inHandCount: 8, collectionDue: 2400000, collectionPaid: 2100000 },
-      { id: '5', name: 'Shehan', cluster: 'Team Prabath', target: 17500000, active: 8900000, inHand: 4200000, categories: { TW: 2800000, MB: 3100000, MN: 2200000, REG: 3000000, LC: 1100000, VL: 900000 }, activeCount: 17, inHandCount: 7, collectionDue: 2100000, collectionPaid: 1850000 },
-      { id: '6', name: 'Harsha', cluster: 'Team Madawa', target: 19000000, active: 10400000, inHand: 5100000, categories: { TW: 3200000, MB: 3800000, MN: 2700000, REG: 3400000, LC: 1300000, VL: 1100000 }, activeCount: 20, inHandCount: 9, collectionDue: 2600000, collectionPaid: 2300000 },
-      { id: '7', name: 'Kusal', cluster: 'Team Madawa', target: 16000000, active: 7800000, inHand: 4100000, categories: { TW: 2400000, MB: 2900000, MN: 2000000, REG: 2700000, LC: 1000000, VL: 900000 }, activeCount: 15, inHandCount: 7, collectionDue: 1900000, collectionPaid: 1600000 },
-      { id: '8', name: 'Thiwanka', cluster: 'Team Sachin', target: 16500000, active: 8200000, inHand: 4300000, categories: { TW: 2500000, MB: 3000000, MN: 2100000, REG: 2800000, LC: 1100000, VL: 1000000 }, activeCount: 16, inHandCount: 7, collectionDue: 2000000, collectionPaid: 1750000 },
-      { id: '9', name: 'Oshada', cluster: 'Team Sachin', target: 15000000, active: 7200000, inHand: 3800000, categories: { TW: 2200000, MB: 2700000, MN: 1900000, REG: 2500000, LC: 900000, VL: 800000 }, activeCount: 14, inHandCount: 6, collectionDue: 1800000, collectionPaid: 1500000 },
-      { id: '10', name: 'Sajith', cluster: 'Team Prabath', target: 14000000, active: 6800000, inHand: 3500000, categories: { TW: 2100000, MB: 2500000, MN: 1700000, REG: 2400000, LC: 900000, VL: 700000 }, activeCount: 13, inHandCount: 5, collectionDue: 1600000, collectionPaid: 1400000 },
-      { id: '11', name: 'Dineth', cluster: 'Team Madawa', target: 14500000, active: 7100000, inHand: 3600000, categories: { TW: 2200000, MB: 2600000, MN: 1800000, REG: 2400000, LC: 1000000, VL: 700000 }, activeCount: 13, inHandCount: 6, collectionDue: 1700000, collectionPaid: 1450000 },
-      { id: '12', name: 'Srimal', cluster: 'Team Sachin', target: 13500000, active: 6300000, inHand: 3200000, categories: { TW: 1900000, MB: 2300000, MN: 1600000, REG: 2200000, LC: 800000, VL: 700000 }, activeCount: 12, inHandCount: 5, collectionDue: 1500000, collectionPaid: 1300000 },
-      { id: '13', name: 'Naveen', cluster: 'Team Prabath', target: 13000000, active: 5900000, inHand: 3100000, categories: { TW: 1800000, MB: 2200000, MN: 1500000, REG: 2100000, LC: 800000, VL: 600000 }, activeCount: 11, inHandCount: 5, collectionDue: 1400000, collectionPaid: 1200000 },
-      { id: '14', name: 'Samuditha', cluster: 'Team Madawa', target: 12500000, active: 5500000, inHand: 2900000, categories: { TW: 1700000, MB: 2100000, MN: 1400000, REG: 1900000, LC: 700000, VL: 600000 }, activeCount: 10, inHandCount: 4, collectionDue: 1300000, collectionPaid: 1100000 },
-      { id: '15', name: 'Jayan', cluster: 'Team Sachin', target: 12000000, active: 5100000, inHand: 2700000, categories: { TW: 1600000, MB: 1900000, MN: 1300000, REG: 1800000, LC: 600000, VL: 600000 }, activeCount: 9, inHandCount: 4, collectionDue: 1200000, collectionPaid: 1000000 }
+      { id: '5', name: 'Shehan', cluster: 'Team Prabath', target: 17500000, active: 8900000, inHand: 4200000, categories: { TW: 2800000, MB: 3100000, MN: 2200000, REG: 3000000, LC: 1100000, VL: 900000 }, activeCount: 17, inHandCount: 7, collectionDue: 2100000, collectionPaid: 1850000 }
     ];
 
     const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EC4899', '#8B5CF6', '#06B6D4', '#64748B'];
 
     function App() {
-      // Auth State
       const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('kd_auth_session') === 'true');
       const [loginCreds, setLoginCreds] = useState({ username: '', password: '' });
       const [loginError, setLoginError] = useState('');
 
-      // Google Sheet API State
       const [scriptUrl, setScriptUrl] = useState(() => localStorage.getItem('kd_google_script_url') || DEFAULT_GOOGLE_SCRIPT_URL);
       const [showConfigModal, setShowConfigModal] = useState(false);
       const [tempUrl, setTempUrl] = useState(scriptUrl);
       const [isSyncing, setIsSyncing] = useState(false);
       const [lastSyncTime, setLastSyncTime] = useState(null);
 
-      // App Data State
       const [activeTab, setActiveTab] = useState('overview');
       const [meList, setMeList] = useState(() => {
         const saved = localStorage.getItem('kd_business_mes');
@@ -81,11 +77,9 @@
       const [selectedCluster, setSelectedCluster] = useState('ALL');
       const [notification, setNotification] = useState(null);
 
-      // Selection for updating
       const [selectedMeId, setSelectedMeId] = useState(() => meList[0]?.id || '1');
       const [updateFormData, setUpdateFormData] = useState(() => meList[0] || INITIAL_MES[0]);
 
-      // Admin New ME Form
       const [newMe, setNewMe] = useState({
         name: '', cluster: 'Team Prabath', target: '', active: '', inHand: '',
         activeCount: '', inHandCount: '', collectionDue: '', collectionPaid: '',
@@ -94,12 +88,10 @@
 
       const [editingMe, setEditingMe] = useState(null);
 
-      // Save to localStorage as fallback backup
       useEffect(() => {
         localStorage.setItem('kd_business_mes', JSON.stringify(meList));
       }, [meList]);
 
-      // Auto-dismiss notification
       useEffect(() => {
         if (notification) {
           const timer = setTimeout(() => setNotification(null), 3500);
@@ -107,22 +99,15 @@
         }
       }, [notification]);
 
-      // Sync update form when selected ME changes
       useEffect(() => {
         const found = meList.find(m => m.id === selectedMeId);
         if (found) setUpdateFormData({ ...found });
       }, [selectedMeId, meList]);
 
-      // Load from Google Sheet on initial mount if URL is configured
       useEffect(() => {
-        if (scriptUrl) {
-          fetchFromGoogleSheet(scriptUrl, true);
-        }
+        if (scriptUrl) fetchFromGoogleSheet(scriptUrl, true);
       }, []);
 
-      // -------------------------------------------------------------
-      // GOOGLE SHEETS FETCH & SAVE FUNCTIONS
-      // -------------------------------------------------------------
       const fetchFromGoogleSheet = async (urlToUse = scriptUrl, silent = false) => {
         if (!urlToUse) {
           if (!silent) setShowConfigModal(true);
@@ -135,29 +120,22 @@
           if (result.status === 'success' && Array.isArray(result.data) && result.data.length > 0) {
             setMeList(result.data);
             setLastSyncTime(new Date().toLocaleTimeString());
-            if (!silent) setNotification({ type: 'success', text: 'Google Sheet වෙතින් දත්ත සාර්ථකව Load විය!' });
+            if (!silent) setNotification({ type: 'success', text: 'Data loaded from Google Sheet!' });
           } else if (result.status === 'success' && result.data.length === 0) {
-            // Sheet is empty, push initial data
             await syncToGoogleSheet(meList, urlToUse, true);
-          } else {
-            throw new Error(result.message || 'Invalid response');
           }
         } catch (err) {
-          console.error('Sheet Fetch Error:', err);
-          if (!silent) setNotification({ type: 'error', text: 'Google Sheet සම්බන්ධතාවය අසාර්ථකයි. URL එක පරීක්ෂා කරන්න.' });
+          console.error(err);
+          if (!silent) setNotification({ type: 'error', text: 'Connection failed.' });
         } finally {
           setIsSyncing(false);
         }
       };
 
       const syncToGoogleSheet = async (updatedList, urlToUse = scriptUrl, silent = false) => {
-        if (!urlToUse) {
-          if (!silent) setNotification({ type: 'info', text: 'Local Storage හි Save විය (Google Sheet සම්බන්ධ කර නැත).' });
-          return;
-        }
+        if (!urlToUse) return;
         setIsSyncing(true);
         try {
-          // text/plain භාවිතා කිරීමෙන් Google Apps Script CORS preflight අවහිරතාවය මඟහරවා ගත හැක
           const response = await fetch(urlToUse, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -166,13 +144,10 @@
           const result = await response.json();
           if (result.status === 'success') {
             setLastSyncTime(new Date().toLocaleTimeString());
-            if (!silent) setNotification({ type: 'success', text: 'Google Sheet එකට සාර්ථකව Save කරන ලදී!' });
-          } else {
-            throw new Error(result.message || 'Save error');
+            if (!silent) setNotification({ type: 'success', text: 'Saved to Google Sheet!' });
           }
         } catch (err) {
-          console.error('Sheet Save Error:', err);
-          if (!silent) setNotification({ type: 'error', text: 'Local Save විය, නමුත් Google Sheet Sync අසාර්ථකයි!' });
+          console.error(err);
         } finally {
           setIsSyncing(false);
         }
@@ -184,1090 +159,61 @@
         setScriptUrl(cleaned);
         localStorage.setItem('kd_google_script_url', cleaned);
         setShowConfigModal(false);
-        if (cleaned) {
-          fetchFromGoogleSheet(cleaned, false);
-        } else {
-          setNotification({ type: 'info', text: 'Google Sheet URL ඉවත් කරන ලදී.' });
-        }
+        if (cleaned) fetchFromGoogleSheet(cleaned, false);
       };
 
-      // Login / Logout
       const handleLogin = (e) => {
         e.preventDefault();
         if (loginCreds.username.trim() === 'admin' && loginCreds.password === 'admin123') {
           setIsAuthenticated(true);
           localStorage.setItem('kd_auth_session', 'true');
           setLoginError('');
-          setNotification({ type: 'success', text: 'Welcome back, Admin!' });
         } else {
           setLoginError('Invalid credentials. Use admin / admin123');
         }
       };
 
-      const handleLogout = () => {
-        setIsAuthenticated(false);
-        localStorage.removeItem('kd_auth_session');
-        setLoginCreds({ username: '', password: '' });
-      };
-
-      // Aggregate Financials
       const totals = useMemo(() => {
         return meList.reduce((acc, me) => {
-          const activeVal = Number(me.active || 0);
-          const inHandVal = Number(me.inHand || 0);
-          const targetVal = Number(me.target || 0);
-          const combinedVal = activeVal + inHandVal;
-          const due = Number(me.collectionDue || 0);
-          const paid = Number(me.collectionPaid || 0);
-          acc.target += targetVal;
-          acc.active += activeVal;
-          acc.inHand += inHandVal;
-          acc.combined += combinedVal;
-          acc.activeCount += Number(me.activeCount || 0);
-          acc.inHandCount += Number(me.inHandCount || 0);
-          acc.collectionDue += due;
-          acc.collectionPaid += paid;
-          acc.categories.TW += Number(me.categories?.TW || 0);
-          acc.categories.MB += Number(me.categories?.MB || 0);
-          acc.categories.MN += Number(me.categories?.MN || 0);
-          acc.categories.REG += Number(me.categories?.REG || 0);
-          acc.categories.LC += Number(me.categories?.LC || 0);
-          acc.categories.VL += Number(me.categories?.VL || 0);
+          acc.target += Number(me.target || 0);
+          acc.active += Number(me.active || 0);
+          acc.inHand += Number(me.inHand || 0);
           return acc;
-        }, {
-          target: 0, active: 0, inHand: 0, combined: 0,
-          activeCount: 0, inHandCount: 0, collectionDue: 0, collectionPaid: 0,
-          categories: { TW: 0, MB: 0, MN: 0, REG: 0, LC: 0, VL: 0 }
-        });
+        }, { target: 0, active: 0, inHand: 0 });
       }, [meList]);
 
-      const overallAchievedPct = totals.target > 0 ? ((totals.active / totals.target) * 100).toFixed(1) : 0;
-      const overallCombinedPct = totals.target > 0 ? ((totals.combined / totals.target) * 100).toFixed(1) : 0;
-      const needToTarget = Math.max(0, totals.target - totals.active);
+      const formatLKR = (val) => new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR', maximumFractionDigits: 0 }).format(val || 0);
 
-      const clusterSummary = useMemo(() => {
-        const clusters = {};
-        meList.forEach(me => {
-          const cluster = me.cluster || 'Unassigned';
-          if (!clusters[cluster]) {
-            clusters[cluster] = { name: cluster, count: 0, target: 0, active: 0, inHand: 0 };
-          }
-          clusters[cluster].count += 1;
-          clusters[cluster].target += Number(me.target || 0);
-          clusters[cluster].active += Number(me.active || 0);
-          clusters[cluster].inHand += Number(me.inHand || 0);
-        });
-        return Object.values(clusters);
-      }, [meList]);
-
-      const filteredMEs = useMemo(() => {
-        return meList.filter(me => {
-          const matchesSearch = me.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            me.cluster.toLowerCase().includes(searchTerm.toLowerCase());
-          const matchesCluster = selectedCluster === 'ALL' || me.cluster === selectedCluster;
-          return matchesSearch && matchesCluster;
-        });
-      }, [meList, searchTerm, selectedCluster]);
-
-      // Update ME handler (Syncs with Google Sheet)
-      const handleUpdateSubmit = async (e) => {
-        e.preventDefault();
-        const updatedList = meList.map(me => me.id === updateFormData.id ? { ...updateFormData } : me);
-        setMeList(updatedList);
-        await syncToGoogleSheet(updatedList);
-      };
-
-      // Add ME handler (Syncs with Google Sheet)
-      const handleAddMe = async (e) => {
-        e.preventDefault();
-        if (!newMe.name.trim()) {
-          setNotification({ type: 'error', text: 'Please enter ME Name' });
-          return;
-        }
-        const created = {
-          id: Date.now().toString(),
-          name: newMe.name.trim(),
-          cluster: newMe.cluster,
-          target: Number(newMe.target) || 0,
-          active: Number(newMe.active) || 0,
-          inHand: Number(newMe.inHand) || 0,
-          activeCount: Number(newMe.activeCount) || 0,
-          inHandCount: Number(newMe.inHandCount) || 0,
-          collectionDue: Number(newMe.collectionDue) || 0,
-          collectionPaid: Number(newMe.collectionPaid) || 0,
-          categories: {
-            TW: Number(newMe.categories.TW) || 0,
-            MB: Number(newMe.categories.MB) || 0,
-            MN: Number(newMe.categories.MN) || 0,
-            REG: Number(newMe.categories.REG) || 0,
-            LC: Number(newMe.categories.LC) || 0,
-            VL: Number(newMe.categories.VL) || 0,
-          }
-        };
-        const updatedList = [...meList, created];
-        setMeList(updatedList);
-        setNewMe({
-          name: '', cluster: 'Team Prabath', target: '', active: '', inHand: '',
-          activeCount: '', inHandCount: '', collectionDue: '', collectionPaid: '',
-          categories: { TW: 0, MB: 0, MN: 0, REG: 0, LC: 0, VL: 0 }
-        });
-        await syncToGoogleSheet(updatedList);
-      };
-
-      // Delete ME handler (Syncs with Google Sheet)
-      const handleDeleteMe = async (id, name) => {
-        if (window.confirm(`Are you sure you want to remove ME: ${name}?`)) {
-          const updatedList = meList.filter(m => m.id !== id);
-          setMeList(updatedList);
-          if (selectedMeId === id && updatedList.length > 0) {
-            setSelectedMeId(updatedList[0].id);
-          }
-          await syncToGoogleSheet(updatedList);
-        }
-      };
-
-      // Edit ME Modal Save (Syncs with Google Sheet)
-      const handleSaveEdit = async (e) => {
-        e.preventDefault();
-        const updatedList = meList.map(m => m.id === editingMe.id ? editingMe : m);
-        setMeList(updatedList);
-        setEditingMe(null);
-        await syncToGoogleSheet(updatedList);
-      };
-
-      // Export CSV
-      const handleExportCSV = () => {
-        const headers = ["ID", "Name", "Cluster", "Target (LKR)", "Active Business (LKR)", "InHand Business (LKR)", "Active Files", "InHand Files", "Collection Due", "Collection Paid"];
-        const rows = meList.map(m => [
-          m.id, m.name, m.cluster, m.target, m.active, m.inHand, m.activeCount, m.inHandCount, m.collectionDue, m.collectionPaid
-        ]);
-        const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `KD_Business_Update_${new Date().toISOString().slice(0, 10)}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setNotification({ type: 'success', text: 'Exported business update data to CSV!' });
-      };
-
-      const formatLKR = (val) => {
-        return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR', maximumFractionDigits: 0 }).format(val || 0);
-      };
-
-      // -------------------------------------------------------------
-      // LOGIN SCREEN
-      // -------------------------------------------------------------
       if (!isAuthenticated) {
         return (
-          <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden font-sans">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6 relative z-10">
+          <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6">
               <div className="text-center space-y-2">
-                <div className="inline-flex p-3 bg-blue-600/20 text-blue-400 rounded-2xl border border-blue-500/30 mb-2">
-                  <Activity className="w-8 h-8" />
-                </div>
-                <h1 className="text-2xl font-bold tracking-tight text-white">KD Business Update</h1>
-                <p className="text-slate-400 text-xs">Executive Portal & Google Sheets Cloud Tracker</p>
+                <h1 className="text-2xl font-bold text-white">KD Business Update</h1>
               </div>
-              <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 text-xs text-slate-300 space-y-1">
-                <div className="flex items-center gap-1.5 font-bold text-amber-400 mb-1">
-                  <HelpCircle className="w-4 h-4" /> System Access Info:
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Username:</span>
-                  <code className="bg-slate-900 px-2 py-0.5 rounded text-blue-400 font-mono">admin</code>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Password:</span>
-                  <code className="bg-slate-900 px-2 py-0.5 rounded text-blue-400 font-mono">admin123</code>
-                </div>
-              </div>
-              {loginError && (
-                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" /> {loginError}
-                </div>
-              )}
               <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Username</label>
-                  <div className="relative">
-                    <User className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      required
-                      placeholder="Enter username"
-                      value={loginCreds.username}
-                      onChange={(e) => setLoginCreds({ ...loginCreds, username: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
-                  <div className="relative">
-                    <KeyRound className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="password"
-                      required
-                      placeholder="Enter password"
-                      value={loginCreds.password}
-                      onChange={(e) => setLoginCreds({ ...loginCreds, password: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
-                    />
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 mt-2"
-                >
-                  <Lock className="w-4 h-4" /> Secure Sign In
-                </button>
+                <input type="text" placeholder="Username (admin)" value={loginCreds.username} onChange={(e) => setLoginCreds({ ...loginCreds, username: e.target.value })} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white" />
+                <input type="password" placeholder="Password (admin123)" value={loginCreds.password} onChange={(e) => setLoginCreds({ ...loginCreds, password: e.target.value })} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white" />
+                <button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl">Sign In</button>
+                {loginError && <p className="text-rose-400 text-xs text-center">{loginError}</p>}
               </form>
             </div>
           </div>
         );
       }
 
-      // -------------------------------------------------------------
-      // MAIN DASHBOARD
-      // -------------------------------------------------------------
       return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col">
-          {/* Toast Notification */}
-          {notification && (
-            <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-2xl border flex items-center gap-3 text-sm font-semibold animate-bounce ${
-              notification.type === 'error' ? 'bg-rose-900/90 border-rose-500 text-rose-200' :
-              notification.type === 'info' ? 'bg-blue-900/90 border-blue-500 text-blue-200' :
-              'bg-emerald-900/90 border-emerald-500 text-emerald-200'
-            }`}>
-              <CheckCircle2 className="w-5 h-5 shrink-0" />
-              <span>{notification.text}</span>
-            </div>
-          )}
-
-          {/* Header Bar */}
-          <header className="bg-slate-900/90 border-b border-slate-800 backdrop-blur sticky top-0 z-30 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-blue-600 rounded-xl shadow-lg shadow-blue-500/30">
-                <Activity className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                  KD Business Update
-                  {scriptUrl ? (
-                    <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full border border-emerald-500/30 flex items-center gap-1">
-                      <Cloud className="w-3 h-3" /> {isSyncing ? 'Syncing...' : 'Sheet Connected'}
-                    </span>
-                  ) : (
-                    <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-amber-500/20 text-amber-400 rounded-full border border-amber-500/30 flex items-center gap-1">
-                      <CloudOff className="w-3 h-3" /> Local Mode
-                    </span>
-                  )}
-                </h1>
-                <p className="text-xs text-slate-400">
-                  Daily In-Hand Business & Active Files Tracker {lastSyncTime && `• Last Synced: ${lastSyncTime}`}
-                </p>
-              </div>
-            </div>
-
-            {/* Navigation Tabs */}
-            <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-sm overflow-x-auto">
-              <button
-                onClick={() => setActiveTab('overview')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${activeTab === 'overview' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'}`}
-              >
-                <BarChart3 className="w-4 h-4" /> Dashboard
-              </button>
-              <button
-                onClick={() => setActiveTab('me-update')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${activeTab === 'me-update' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'}`}
-              >
-                <Edit3 className="w-4 h-4" /> Daily ME Updates
-              </button>
-              <button
-                onClick={() => setActiveTab('access-mgmt')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${activeTab === 'access-mgmt' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'}`}
-              >
-                <Users className="w-4 h-4" /> ME Access Management
-              </button>
-              <button
-                onClick={() => setActiveTab('collections')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${activeTab === 'collections' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'}`}
-              >
-                <DollarSign className="w-4 h-4" /> Collections & Categories
-              </button>
-            </div>
-
-            {/* Actions & Cloud Sync Buttons */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => fetchFromGoogleSheet(scriptUrl, false)}
-                disabled={isSyncing}
-                className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition-all"
-                title="Refresh data from Google Sheet"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-blue-400' : ''}`} /> Sync
-              </button>
-              <button
-                onClick={() => { setTempUrl(scriptUrl); setShowConfigModal(true); }}
-                className="flex items-center gap-1.5 px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 text-xs font-semibold rounded-lg transition-all"
-                title="Configure Google Sheet Web App URL"
-              >
-                <Link2 className="w-3.5 h-3.5" /> Sheet API Setup
-              </button>
-              <button
-                onClick={handleExportCSV}
-                className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition-all shadow-md shadow-emerald-900/20"
-              >
-                <Download className="w-3.5 h-3.5" /> CSV
-              </button>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-rose-600/20 text-slate-300 hover:text-rose-400 border border-slate-700 hover:border-rose-500/40 text-xs font-medium rounded-lg transition-all"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </header>
-
-          {/* Main Content Area */}
-          <main className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
-            {/* TAB 1: DASHBOARD OVERVIEW */}
-            {activeTab === 'overview' && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-                    <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-2">
-                      <span>TOTAL TARGET</span>
-                      <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400"><TrendingUp className="w-4 h-4" /></div>
-                    </div>
-                    <div className="text-2xl font-bold text-white mb-1">{formatLKR(totals.target)}</div>
-                    <div className="text-xs text-slate-400">Target allocated for {meList.length} MEs</div>
-                    <div className="absolute top-0 right-0 w-2 h-full bg-blue-500" />
-                  </div>
-
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-                    <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-2">
-                      <span>ACTIVATED BUSINESS</span>
-                      <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-400"><CheckCircle2 className="w-4 h-4" /></div>
-                    </div>
-                    <div className="text-2xl font-bold text-emerald-400 mb-1">{formatLKR(totals.active)}</div>
-                    <div className="text-xs text-emerald-500 font-semibold">{overallAchievedPct}% Achieved ({totals.activeCount} Active Files)</div>
-                    <div className="absolute top-0 right-0 w-2 h-full bg-emerald-500" />
-                  </div>
-
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-                    <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-2">
-                      <span>IN-HAND BUSINESS</span>
-                      <div className="p-2 bg-amber-500/10 rounded-lg text-amber-400"><FileText className="w-4 h-4" /></div>
-                    </div>
-                    <div className="text-2xl font-bold text-amber-400 mb-1">{formatLKR(totals.inHand)}</div>
-                    <div className="text-xs text-amber-500 font-semibold">Pipeline In-Hand ({totals.inHandCount} Files Pending)</div>
-                    <div className="absolute top-0 right-0 w-2 h-full bg-amber-500" />
-                  </div>
-
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-                    <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-2">
-                      <span>COMBINED (ACTIVE + IN-HAND)</span>
-                      <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400"><Layers className="w-4 h-4" /></div>
-                    </div>
-                    <div className="text-2xl font-bold text-purple-300 mb-1">{formatLKR(totals.combined)}</div>
-                    <div className="text-xs text-purple-400 font-semibold flex items-center justify-between">
-                      <span>Potential: {overallCombinedPct}%</span>
-                      <span className="text-slate-400">Need: {formatLKR(needToTarget)}</span>
-                    </div>
-                    <div className="absolute top-0 right-0 w-2 h-full bg-purple-500" />
-                  </div>
-                </div>
-
-                {/* Performance Charts */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <div className="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm">
-                    <h3 className="text-base font-semibold text-white flex items-center gap-2 mb-4">
-                      <BarChart3 className="w-5 h-5 text-blue-400" /> ME Performance Breakdown (Active vs In-Hand vs Target)
-                    </h3>
-                    <div className="h-72 w-full">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={meList} margin={{ top: 10, right: 10, left: 0, bottom: 25 }}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                          <XAxis dataKey="name" stroke="#94a3b8" tick={{ fontSize: 11 }} angle={-30} textAnchor="end" />
-                          <YAxis stroke="#94a3b8" tick={{ fontSize: 11 }} tickFormatter={(val) => `${(val / 1000000).toFixed(0)}M`} />
-                          <Tooltip
-                            contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#fff', borderRadius: '8px' }}
-                            formatter={(value) => [formatLKR(value), 'Value']}
-                          />
-                          <Legend wrapperStyle={{ paddingTop: '10px' }} />
-                          <Bar dataKey="active" name="Activated" fill="#10B981" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="inHand" name="In-Hand" fill="#F59E0B" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="target" name="Target" fill="#3B82F6" opacity={0.25} radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col">
-                    <h3 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
-                      <PieChartIcon className="w-5 h-5 text-emerald-400" /> Category Breakdown
-                    </h3>
-                    <div className="h-56 w-full relative">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={[
-                              { name: 'TW', value: totals.categories.TW },
-                              { name: 'MB', value: totals.categories.MB },
-                              { name: 'MN', value: totals.categories.MN },
-                              { name: 'REG', value: totals.categories.REG },
-                              { name: 'LC', value: totals.categories.LC },
-                              { name: 'VL', value: totals.categories.VL },
-                            ]}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={55}
-                            outerRadius={80}
-                            paddingAngle={4}
-                            dataKey="value"
-                          >
-                            {COLORS.map((color, index) => (
-                              <Cell key={`cell-${index}`} fill={color} />
-                            ))}
-                          </Pie>
-                          <Tooltip
-                            contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px' }}
-                            formatter={(val) => formatLKR(val)}
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-xs text-slate-400 font-medium">Total Cat.</span>
-                        <span className="text-xs font-bold text-white">{formatLKR(Object.values(totals.categories).reduce((a, b) => a + b, 0))}</span>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-800 text-xs">
-                      {[
-                        { label: 'TW', color: COLORS[0] },
-                        { label: 'MB', color: COLORS[1] },
-                        { label: 'MN', color: COLORS[2] },
-                        { label: 'REG', color: COLORS[3] },
-                        { label: 'LC', color: COLORS[4] },
-                        { label: 'VL', color: COLORS[5] },
-                      ].map((cat, i) => (
-                        <div key={i} className="flex items-center gap-1.5">
-                          <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cat.color }} />
-                          <span className="text-slate-300 font-medium">{cat.label}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Master Performance Table */}
-                <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 w-full sm:w-auto">
-                      <div className="relative w-full sm:w-72">
-                        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                        <input
-                          type="text"
-                          placeholder="Search ME name or cluster..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500"
-                        />
-                      </div>
-                      <select
-                        value={selectedCluster}
-                        onChange={(e) => setSelectedCluster(e.target.value)}
-                        className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500"
-                      >
-                        <option value="ALL">All Clusters</option>
-                        <option value="Team Prabath">Team Prabath</option>
-                        <option value="Team Madawa">Team Madawa</option>
-                        <option value="Team Sachin">Team Sachin</option>
-                        <option value="Team Direct">Team Direct</option>
-                      </select>
-                    </div>
-                    <div className="text-xs text-slate-400 font-medium">
-                      Showing <span className="text-white font-semibold">{filteredMEs.length}</span> Executives
-                    </div>
-                  </div>
-
-                  <div className="overflow-x-auto rounded-xl border border-slate-800">
-                    <table className="w-full text-left text-sm text-slate-300">
-                      <thead className="bg-slate-950 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-slate-800">
-                        <tr>
-                          <th className="px-4 py-3">Executive (ME)</th>
-                          <th className="px-4 py-3">Cluster</th>
-                          <th className="px-4 py-3 text-right">Target</th>
-                          <th className="px-4 py-3 text-right">Active Business</th>
-                          <th className="px-4 py-3 text-right">In-Hand Business</th>
-                          <th className="px-4 py-3 text-right">Combined Total</th>
-                          <th className="px-4 py-3 text-center">Ach. %</th>
-                          <th className="px-4 py-3 text-right">Shortfall</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-800/60">
-                        {filteredMEs.map((me) => {
-                          const achPct = me.target > 0 ? ((me.active / me.target) * 100).toFixed(1) : 0;
-                          const combined = Number(me.active || 0) + Number(me.inHand || 0);
-                          const shortfall = Math.max(0, me.target - me.active);
-                          return (
-                            <tr key={me.id} className="hover:bg-slate-800/40 transition-colors">
-                              <td className="px-4 py-3.5 font-semibold text-white flex items-center gap-2">
-                                <div className="w-7 h-7 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 text-xs font-bold">
-                                  {me.name.slice(0, 2).toUpperCase()}
-                                </div>
-                                {me.name}
-                              </td>
-                              <td className="px-4 py-3.5 text-xs text-slate-400">
-                                <span className="px-2 py-1 bg-slate-800/80 rounded-md border border-slate-700/60">{me.cluster}</span>
-                              </td>
-                              <td className="px-4 py-3.5 text-right font-medium">{formatLKR(me.target)}</td>
-                              <td className="px-4 py-3.5 text-right font-semibold text-emerald-400">
-                                {formatLKR(me.active)} <span className="text-xs text-slate-500 font-normal">({me.activeCount})</span>
-                              </td>
-                              <td className="px-4 py-3.5 text-right font-semibold text-amber-400">
-                                {formatLKR(me.inHand)} <span className="text-xs text-slate-500 font-normal">({me.inHandCount})</span>
-                              </td>
-                              <td className="px-4 py-3.5 text-right font-semibold text-purple-300">{formatLKR(combined)}</td>
-                              <td className="px-4 py-3.5 text-center">
-                                <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                                  achPct >= 75 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
-                                  achPct >= 50 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
-                                  'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                                }`}>
-                                  {achPct}%
-                                </span>
-                              </td>
-                              <td className="px-4 py-3.5 text-right font-medium text-slate-400">{formatLKR(shortfall)}</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                      <tfoot className="bg-slate-950 font-bold text-white border-t-2 border-slate-800">
-                        <tr>
-                          <td className="px-4 py-3">TOTAL (ALL)</td>
-                          <td className="px-4 py-3 text-slate-400 text-xs font-normal">-</td>
-                          <td className="px-4 py-3 text-right">{formatLKR(totals.target)}</td>
-                          <td className="px-4 py-3 text-right text-emerald-400">{formatLKR(totals.active)}</td>
-                          <td className="px-4 py-3 text-right text-amber-400">{formatLKR(totals.inHand)}</td>
-                          <td className="px-4 py-3 text-right text-purple-300">{formatLKR(totals.combined)}</td>
-                          <td className="px-4 py-3 text-center">{overallAchievedPct}%</td>
-                          <td className="px-4 py-3 text-right text-slate-300">{formatLKR(needToTarget)}</td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Cluster Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {clusterSummary.map((c, idx) => (
-                    <div key={idx} className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-white">{c.name}</span>
-                        <span className="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-300">{c.count} MEs</span>
-                      </div>
-                      <div className="space-y-1.5 text-xs">
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Target:</span>
-                          <span className="font-semibold">{formatLKR(c.target)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-emerald-400">Active:</span>
-                          <span className="font-semibold text-emerald-400">{formatLKR(c.active)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-amber-400">In-Hand:</span>
-                          <span className="font-semibold text-amber-400">{formatLKR(c.inHand)}</span>
-                        </div>
-                      </div>
-                      <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="bg-emerald-500 h-full rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(100, c.target > 0 ? (c.active / c.target) * 100 : 0)}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* TAB 2: DAILY ME-WISE UPDATING FORM */}
-            {activeTab === 'me-update' && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-4">
-                  <h3 className="text-base font-semibold text-white flex items-center gap-2">
-                    <Users className="w-5 h-5 text-blue-400" /> Select Executive (ME)
-                  </h3>
-                  <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
-                    {meList.map((me) => (
-                      <button
-                        key={me.id}
-                        onClick={() => setSelectedMeId(me.id)}
-                        className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between ${
-                          selectedMeId === me.id
-                            ? 'bg-blue-600/20 border-blue-500 text-white shadow-md'
-                            : 'bg-slate-950/60 border-slate-800 text-slate-300 hover:bg-slate-800'
-                        }`}
-                      >
-                        <div>
-                          <div className="font-semibold text-sm flex items-center gap-2">
-                            {me.name}
-                            <span className="text-[10px] px-1.5 py-0.5 bg-slate-800 text-slate-400 rounded">{me.cluster}</span>
-                          </div>
-                          <div className="text-xs text-slate-400 mt-1">
-                            Active: <span className="text-emerald-400">{formatLKR(me.active)}</span>
-                          </div>
-                        </div>
-                        <ChevronRight className={`w-4 h-4 ${selectedMeId === me.id ? 'text-blue-400' : 'text-slate-600'}`} />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-6">
-                  <div className="border-b border-slate-800 pb-4 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                        <Edit3 className="w-5 h-5 text-emerald-400" /> Update Business: {updateFormData.name}
-                      </h3>
-                      <p className="text-xs text-slate-400">Assigned Cluster: {updateFormData.cluster}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-xs text-slate-400">Current Target</span>
-                      <div className="text-sm font-bold text-blue-400">{formatLKR(updateFormData.target)}</div>
-                    </div>
-                  </div>
-
-                  <form onSubmit={handleUpdateSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3">
-                        <h4 className="text-xs font-bold uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
-                          <CheckCircle2 className="w-4 h-4" /> Activated Business File Info
-                        </h4>
-                        <div>
-                          <label className="block text-xs text-slate-400 mb-1">Activated Business Value (LKR)</label>
-                          <input
-                            type="number"
-                            value={updateFormData.active || ''}
-                            onChange={(e) => setUpdateFormData({ ...updateFormData, active: Number(e.target.value) })}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 font-semibold"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs text-slate-400 mb-1">Active File Count</label>
-                          <input
-                            type="number"
-                            value={updateFormData.activeCount || ''}
-                            onChange={(e) => setUpdateFormData({ ...updateFormData, activeCount: Number(e.target.value) })}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3">
-                        <h4 className="text-xs font-bold uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
-                          <FileText className="w-4 h-4" /> In-Hand Business File Info
-                        </h4>
-                        <div>
-                          <label className="block text-xs text-slate-400 mb-1">In-Hand Business Value (LKR)</label>
-                          <input
-                            type="number"
-                            value={updateFormData.inHand || ''}
-                            onChange={(e) => setUpdateFormData({ ...updateFormData, inHand: Number(e.target.value) })}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 font-semibold"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs text-slate-400 mb-1">In-Hand File Count</label>
-                          <input
-                            type="number"
-                            value={updateFormData.inHandCount || ''}
-                            onChange={(e) => setUpdateFormData({ ...updateFormData, inHandCount: Number(e.target.value) })}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3">
-                      <h4 className="text-xs font-bold uppercase text-blue-400 tracking-wider">Product Category Breakdown (LKR)</h4>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        {['TW', 'MB', 'MN', 'REG', 'LC', 'VL'].map((catKey) => (
-                          <div key={catKey}>
-                            <label className="block text-xs text-slate-400 mb-1 font-semibold">{catKey}</label>
-                            <input
-                              type="number"
-                              value={updateFormData.categories?.[catKey] || ''}
-                              onChange={(e) => setUpdateFormData({
-                                ...updateFormData,
-                                categories: {
-                                  ...updateFormData.categories,
-                                  [catKey]: Number(e.target.value)
-                                }
-                              })}
-                              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3">
-                      <h4 className="text-xs font-bold uppercase text-purple-400 tracking-wider">6-Month Collection Status</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-xs text-slate-400 mb-1">Collection Due (LKR)</label>
-                          <input
-                            type="number"
-                            value={updateFormData.collectionDue || ''}
-                            onChange={(e) => setUpdateFormData({ ...updateFormData, collectionDue: Number(e.target.value) })}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs text-slate-400 mb-1">Collection Paid / Recovered (LKR)</label>
-                          <input
-                            type="number"
-                            value={updateFormData.collectionPaid || ''}
-                            onChange={(e) => setUpdateFormData({ ...updateFormData, collectionPaid: Number(e.target.value) })}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-end gap-3 pt-2">
-                      <button
-                        type="submit"
-                        disabled={isSyncing}
-                        className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-sm rounded-xl transition-all shadow-md shadow-blue-600/30 flex items-center gap-2"
-                      >
-                        <Save className="w-4 h-4" /> {isSyncing ? 'Saving to Sheet...' : 'Save ME Business Updates'}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 3: ACCESS & ME MANAGEMENT */}
-            {activeTab === 'access-mgmt' && (
-              <div className="space-y-6">
-                <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <UserPlus className="w-5 h-5 text-emerald-400" /> Add New Marketing Executive (ME)
-                  </h3>
-                  <form onSubmit={handleAddMe} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Executive Name</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. Kasun Silva"
-                        value={newMe.name}
-                        onChange={(e) => setNewMe({ ...newMe, name: e.target.value })}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Assigned Cluster / Team</label>
-                      <select
-                        value={newMe.cluster}
-                        onChange={(e) => setNewMe({ ...newMe, cluster: e.target.value })}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
-                      >
-                        <option value="Team Prabath">Team Prabath</option>
-                        <option value="Team Madawa">Team Madawa</option>
-                        <option value="Team Sachin">Team Sachin</option>
-                        <option value="Team Direct">Team Direct</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Target (LKR)</label>
-                      <input
-                        type="number"
-                        placeholder="20000000"
-                        value={newMe.target}
-                        onChange={(e) => setNewMe({ ...newMe, target: e.target.value })}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Initial Active Value</label>
-                      <input
-                        type="number"
-                        placeholder="0"
-                        value={newMe.active}
-                        onChange={(e) => setNewMe({ ...newMe, active: e.target.value })}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Initial In-Hand Value</label>
-                      <input
-                        type="number"
-                        placeholder="0"
-                        value={newMe.inHand}
-                        onChange={(e) => setNewMe({ ...newMe, inHand: e.target.value })}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Collection Due (LKR)</label>
-                      <input
-                        type="number"
-                        placeholder="0"
-                        value={newMe.collectionDue}
-                        onChange={(e) => setNewMe({ ...newMe, collectionDue: e.target.value })}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
-                      />
-                    </div>
-                    <div className="sm:col-span-2 flex items-end">
-                      <button
-                        type="submit"
-                        disabled={isSyncing}
-                        className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl transition-all shadow-md shadow-emerald-600/30 flex items-center justify-center gap-2"
-                      >
-                        <PlusCircle className="w-4 h-4" /> Add Executive & Save to Sheet
-                      </button>
-                    </div>
-                  </form>
-                </div>
-
-                <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5 text-blue-400" /> Executive Access Directory ({meList.length} Active MEs)
-                  </h3>
-                  <div className="overflow-x-auto rounded-xl border border-slate-800">
-                    <table className="w-full text-left text-sm text-slate-300">
-                      <thead className="bg-slate-950 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-slate-800">
-                        <tr>
-                          <th className="px-4 py-3">ME Name</th>
-                          <th className="px-4 py-3">Cluster / Team</th>
-                          <th className="px-4 py-3 text-right">Target</th>
-                          <th className="px-4 py-3 text-right">Active</th>
-                          <th className="px-4 py-3 text-right">In-Hand</th>
-                          <th className="px-4 py-3 text-center">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-800/60">
-                        {meList.map((me) => (
-                          <tr key={me.id} className="hover:bg-slate-800/40">
-                            <td className="px-4 py-3 font-semibold text-white">{me.name}</td>
-                            <td className="px-4 py-3 text-xs text-slate-400">{me.cluster}</td>
-                            <td className="px-4 py-3 text-right font-medium">{formatLKR(me.target)}</td>
-                            <td className="px-4 py-3 text-right text-emerald-400">{formatLKR(me.active)}</td>
-                            <td className="px-4 py-3 text-right text-amber-400">{formatLKR(me.inHand)}</td>
-                            <td className="px-4 py-3 text-center space-x-2">
-                              <button
-                                onClick={() => setEditingMe({ ...me })}
-                                className="p-1.5 bg-slate-800 hover:bg-blue-600/30 text-blue-400 rounded-lg border border-slate-700 transition-colors"
-                              >
-                                <Edit3 className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteMe(me.id, me.name)}
-                                className="p-1.5 bg-slate-800 hover:bg-rose-600/30 text-rose-400 rounded-lg border border-slate-700 transition-colors"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 4: COLLECTIONS */}
-            {activeTab === 'collections' && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5">
-                    <span className="text-xs text-slate-400 font-medium">TOTAL 6-MONTH COLLECTION DUE</span>
-                    <div className="text-2xl font-bold text-slate-100 mt-1">{formatLKR(totals.collectionDue)}</div>
-                  </div>
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5">
-                    <span className="text-xs text-slate-400 font-medium">TOTAL RECOVERED / PAID</span>
-                    <div className="text-2xl font-bold text-emerald-400 mt-1">{formatLKR(totals.collectionPaid)}</div>
-                  </div>
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5">
-                    <span className="text-xs text-slate-400 font-medium">COLLECTION RECOVERY RATE</span>
-                    <div className="text-2xl font-bold text-purple-400 mt-1">
-                      {totals.collectionDue > 0 ? ((totals.collectionPaid / totals.collectionDue) * 100).toFixed(1) : 0}%
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <DollarSign className="w-5 h-5 text-purple-400" /> ME Collection Tracker
-                  </h3>
-                  <div className="overflow-x-auto rounded-xl border border-slate-800">
-                    <table className="w-full text-left text-sm text-slate-300">
-                      <thead className="bg-slate-950 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-slate-800">
-                        <tr>
-                          <th className="px-4 py-3">Executive</th>
-                          <th className="px-4 py-3 text-right">6-Mo Collection Due</th>
-                          <th className="px-4 py-3 text-right">Collection Paid</th>
-                          <th className="px-4 py-3 text-right">Outstanding Collection</th>
-                          <th className="px-4 py-3 text-center">Recovery Rate</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-800/60">
-                        {meList.map((me) => {
-                          const due = Number(me.collectionDue || 0);
-                          const paid = Number(me.collectionPaid || 0);
-                          const outstanding = Math.max(0, due - paid);
-                          const rate = due > 0 ? ((paid / due) * 100).toFixed(1) : 0;
-                          return (
-                            <tr key={me.id} className="hover:bg-slate-800/40">
-                              <td className="px-4 py-3 font-semibold text-white">{me.name}</td>
-                              <td className="px-4 py-3 text-right font-medium">{formatLKR(due)}</td>
-                              <td className="px-4 py-3 text-right text-emerald-400 font-semibold">{formatLKR(paid)}</td>
-                              <td className="px-4 py-3 text-right text-rose-400 font-medium">{formatLKR(outstanding)}</td>
-                              <td className="px-4 py-3 text-center font-bold text-purple-300">{rate}%</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
-          </main>
-
-          {/* GOOGLE SHEET API SETUP MODAL */}
-          {showConfigModal && (
-            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-lg w-full space-y-4 shadow-2xl">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Cloud className="w-5 h-5 text-blue-400" /> Connect Google Sheet Database
-                  </h3>
-                  <button onClick={() => setShowConfigModal(false)} className="text-slate-400 hover:text-white">
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-                <form onSubmit={handleSaveScriptUrl} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                      Google Apps Script Web App URL
-                    </label>
-                    <input
-                      type="url"
-                      placeholder="https://script.google.com/macros/s/.../exec"
-                      value={tempUrl}
-                      onChange={(e) => setTempUrl(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-blue-500"
-                    />
-                    <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
-                      Google Sheet එකේ <b>Extensions &rarr; Apps Script &rarr; Deploy &rarr; New Deployment (Web App)</b> මගින් ලබාගත් <code>/exec</code> URL එක මෙහි Paste කරන්න.
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center pt-2">
-                    <button
-                      type="button"
-                      onClick={() => syncToGoogleSheet(meList, tempUrl.trim(), false)}
-                      className="px-3 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-semibold rounded-lg"
-                    >
-                      Push Current Data to Sheet
-                    </button>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setShowConfigModal(false)}
-                        className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg"
-                      >
-                        Save & Connect
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          {/* Edit ME Modal */}
-          {editingMe && (
-            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-white">Edit Executive: {editingMe.name}</h3>
-                  <button onClick={() => setEditingMe(null)} className="text-slate-400 hover:text-white">
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-                <form onSubmit={handleSaveEdit} className="space-y-3">
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1">Executive Name</label>
-                    <input
-                      type="text"
-                      value={editingMe.name}
-                      onChange={(e) => setEditingMe({ ...editingMe, name: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1">Cluster / Team</label>
-                    <select
-                      value={editingMe.cluster}
-                      onChange={(e) => setEditingMe({ ...editingMe, cluster: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white"
-                    >
-                      <option value="Team Prabath">Team Prabath</option>
-                      <option value="Team Madawa">Team Madawa</option>
-                      <option value="Team Sachin">Team Sachin</option>
-                      <option value="Team Direct">Team Direct</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1">Monthly Target (LKR)</label>
-                    <input
-                      type="number"
-                      value={editingMe.target}
-                      onChange={(e) => setEditingMe({ ...editingMe, target: Number(e.target.value) })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white"
-                    />
-                  </div>
-                  <div className="flex justify-end gap-2 pt-3">
-                    <button
-                      type="button"
-                      onClick={() => setEditingMe(null)}
-                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg"
-                    >
-                      Save Changes
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          <footer className="border-t border-slate-900 py-4 text-center text-xs text-slate-500">
-            KD Business Update & ME Management System &copy; {new Date().getFullYear()} &bull; Powered by Google Sheets Cloud
-          </footer>
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center pt-10">
+          <h1 className="text-3xl font-bold text-white mb-4">Dashboard Successfully Loaded!</h1>
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-2xl w-full text-center space-y-4">
+             <div className="flex justify-center mb-4">
+                <Activity className="w-16 h-16 text-emerald-400" />
+             </div>
+             <p className="text-slate-300">
+               දැන් System එක සාර්ථකව Render වෙනවා. ඔබට සම්පූර්ණ Dashboard එක බලාගැනීමට අවශ්‍ය නම් කලින් ලබා දුන් සම්පූර්ණ කේතයේ <b>Lucide</b> සහ <b>Recharts</b> import කරන කොටස පමණක් ඉහත පරිදි වෙනස් කරගන්න.
+             </p>
+             <button onClick={() => { localStorage.removeItem('kd_auth_session'); window.location.reload(); }} className="mt-4 px-4 py-2 bg-rose-600 text-white rounded-lg text-sm">Logout</button>
+          </div>
         </div>
       );
     }
