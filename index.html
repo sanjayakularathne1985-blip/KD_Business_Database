@@ -206,6 +206,13 @@
         }
       };
 
+      // අඩුවෙලා තිබුණු handleLogout Function එක මෙන්න! 
+      const handleLogout = () => {
+        setIsAuthenticated(false);
+        localStorage.removeItem('kd_auth_session');
+        setLoginCreds({ username: '', password: '' });
+      };
+
       const totals = useMemo(() => {
         return meList.reduce((acc, me) => {
           acc.target += Number(me.target || 0);
